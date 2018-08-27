@@ -13,7 +13,7 @@ function iniciarSesion(req, res) {
     const rutMail = params.rutMail;
     const clave = params.clave;
 
-    Usuario.findOne({}).or([{rut: rutMail}, {correo: rutMail}]).exec(function (err, usuario_encontrado) {
+    Usuario.findOne({}, 'clave fechaNacimiento nick avatar direccion correo rut nombre').or([{rut: rutMail}, {correo: rutMail}]).exec(function (err, usuario_encontrado) {
         if (err) {
             res.status(500).send({
                 desc: 'Error en el servidor',

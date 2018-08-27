@@ -36,6 +36,67 @@ function creaNoticia(req, res) {
     })
 }
 
+function getNoticia (req, res){
+    const idNoticia = req.params.id;
+
+    Noticia.findOne({_id: idNoticia}, (err, noticia_encontrada) => {
+        if (err){
+            res.status(500).send({
+                desc: 'Error en el servidor',
+                err: err.message
+            })
+        } else {
+            if(!noticia_encontrada) {
+                res.status(404).send({
+                    desc: 'Noticia no encontrada'
+                })
+            } else {
+                res.status(200).send(noticia_encontrada);
+            }
+        }
+    })
+}
+
+function modificarNoticia(req, res) {
+    const idNoticia = req.body.id;
+    const body = req.body;
+
+    Noticia.findOne({_id: idNoticia},(err, noticia_encontrada) => {
+        if (err) {
+            res.status(500).send({
+                desc: 'Error en el servidor',
+                err: err.message
+            })
+        } else {
+            if (!noticia_encontrada) {
+                res.status(404).send({
+                    desc: 'Noticia no encontrada'
+                })
+            } else {
+                // MODIFICAR LA NOTICIA
+                noticia_encontrada.titulo = body.titulo;
+                noticia_encontrada.cuerpo = body.cuerpo;
+                noticia_encontrada.categoria = body.categoria;
+
+                // GUARDAR NOTICIA MODIFICADA
+                noticia_encontrada.save((err,  noticia_modificada) => {
+                    if (err) {
+                        res.status(500).send({
+                            desc: 'Error en el servidor',
+                            err: err.message
+                        })
+                    } else {
+                        res.status(200).send(noticia_modificada);
+                    }
+                })
+            }
+        }
+    })
+}
+
 module.exports = {
-    crearNoticia
+    crearNoticia,
+    getNoticia,
+    modificarNoticia,
+
 };
